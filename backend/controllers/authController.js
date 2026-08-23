@@ -17,7 +17,7 @@ const signup = async (req,res)=>{
     );
    res.status(201).json({message:"user registered successfully"});
 
-
+ 
 };
 
 
