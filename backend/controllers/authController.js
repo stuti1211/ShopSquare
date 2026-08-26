@@ -44,8 +44,12 @@ const token = jwt.sign(
   { expiresIn: "5h" }
 );
 
-return res.status(200).json({message:"login successful"});
+return res.status(200).json({message:"login successful",token:token});
+
+}
+getMe= async (req,res)=>{
+    return res.status(200).json({  user: req.user });
 
 }
 
-module.exports = {signup,login}; 
+module.exports = {signup,login, getMe}; 
