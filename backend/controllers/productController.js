@@ -25,10 +25,10 @@ const addProduct = async (req,res)=>{
     try{
     const {name,description,price,image,stock}=req.body;
     const result = await pool.query(
-        "INSERT INTO products (name, description, price, image, stock) VALUES ($1, $2, $3, $4, $5)",
+        "INSERT INTO products (name, description, price, image, stock) VALUES ($1, $2, $3, $4, $5) RETURNING *",
         [name, description, price, image, stock]
     );
-   return  res.status(201).json({message :"Product cretaed  successfully"});
+   return  res.status(201).json({message :"Product cretaed  successfully",product: result.rows[0]});
 } 
 catch(error){
     return res.status(500).json({message:"Failed to create a product"});
