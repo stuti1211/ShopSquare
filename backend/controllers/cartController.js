@@ -26,9 +26,24 @@ const addToCart = async(req,res)=>{
     return res.status(201).json({message:"cart item creatd ",cartItem: result.rows[0]});
 }catch(error){
     console.log(error);
-    return res.status(500).json({message:"Failed to add product to cart"});
+    return res.status(500).json({message:"Failed to add product to cart"}); 
 }
 
 }
+  
+const getCart = async (req,res)=>{
+try{
+   const userId = req.user.userId;
+   const result = await pool.query(
+  "SELECT * FROM cart_items WHERE user_id = $1",
+  [userId]
+);
+return res.status(200).json({message:" current cart",cart:result.rows});
 
-module.exports ={addToCart};
+}catch(error){
+   console.log(error);
+   return res.status(500).json({message:"not found"});
+}
+}
+
+module.exports ={addToCart,getCart};
