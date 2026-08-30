@@ -46,4 +46,36 @@ return res.status(200).json({message:" current cart",cart:result.rows});
 }
 }
 
-module.exports ={addToCart,getCart};
+const updateCartItem = async (req,res)=>{
+    const productId = req.params.productId;
+    const {quantity} =req.body;
+    const userId = req.user.userId;
+   const existingItem = await pool.query(
+  "SELECT * FROM cart_items WHERE user_id = $1 AND product_id = $2",
+  [userId, productId]
+);
+   if (existingItem.rows.length === 0) {
+  return res.status(404).json({
+    message: "Product not found in cart"
+  });
+}
+if (quantity > 0) {
+
+   const result = await pool.query(
+    "UPDATE cart_items SET quantity = $1 WHERE user_id = $2 AND product_id = $3 RETURNING *",
+    [quantity, userId, productId]
+);
+    return res.status(200).json({message: "Cart quantity updated",cartItem: result.rows[0]
+
+     });
+}
+   if(quantity ===0)
+      {await pool.query( "DELETE FROM cart_items WHERE user_id = $1 AND product_id = $2",
+       [userId, productId]);
+   }
+     return res.status(200).json({message:"cart item got deleted"});
+}
+
+
+
+module.exports ={addToCart,getCart,updateCartItem};
